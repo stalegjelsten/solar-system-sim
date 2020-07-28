@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import datetime
 import matplotlib.animation as animation
 # from astroquery.jplhorizons import Horizons
-# from IPython.display import HTML
+from IPython.display import HTML
 from IPython.display import display
 import ipywidgets as widgets
 
@@ -43,6 +43,8 @@ class Planet:
         self.parent = orbiting
         self.y = []
         self.line = []
+        self.anim_data = []
+        self.scat = []
         orbiting.add_planet(self)
     
     def f(self, y, t, mstar):
@@ -58,7 +60,7 @@ class Planet:
     def plot_orbit_2d(self):
         y = self.calculate_orbit()                      
         self.y = y
-        self.line, = space_map_ax.plot(y[:,0],y[:,1])
+        self.line, = self.parent.ax.plot(y[:,0],y[:,1])
         self.line.set_label(self.name)
         legend_objects.append(self.line)
         legend_titles.append(self.name)
@@ -69,10 +71,23 @@ class Planet:
         y = y/au                                        # divide by AU 
         return y
     
+    def make_scatter_for_animation(self):
+
+        x = self.y[:,0]
+        y = self.y[:,1]
+        self.data = np.hstack((x[:,np.newaxis], y[:, np.newaxis]))
+
+        self.scat = self.parent.ax.scatter([], [])
+        return self.data, self.scat
+    
     def animate_orbit(self):
-        for i in range(len(self.y)):
-            space_map_anim[0].plot(self.y[i:i+Planet.data_skip,0]/au, \
-                self.y[i:i+Planet.data_skip,1]/au, "o", color="blue")
+        def update_plot(i, data, scat):
+            scat.set_offsets(data[i,:])
+            return scat,
+        data, scat = self.make_scatter_for_animation()
+        ani = animation.FuncAnimation(self.parent.fig, update_plot, frames=len(self.y)-1,\
+            interval=15, fargs=(data, scat))
+        return scat, ani
 
 
     @classmethod
@@ -110,13 +125,18 @@ class solar_system:
         for i in self.planets:
             i.plot_orbit_2d()
 
+    def animate_ss(self):
+        for i in self.planets:
+            self.scat = i.animate_orbit()
+        
+
 
 # Let's add our solar system as an instance
 
 Sun = solar_system("Sun", 1.98892e30)
 
 # create our solar system and save Axes object as space_map
-space_map_ax, space_map_fig = Sun.create_space_map()
+Sun.ax, Sun.fig = Sun.create_space_map()
 
 
 mercury = Planet(199, "Mercury", Sun)
@@ -129,96 +149,61 @@ mars = Planet(499, "Mars", Sun)
 # neptune = Planet(899, "Neptune", Sun)
 
 Sun.populate_ss()
+Sun.animate_ss()
 
-space_map_ax.legend(legend_objects, legend_titles)
+Sun.ax.legend(legend_objects, legend_titles)
 # plt.savefig("hei.png")
-plt.show()
-plt.close('all')
+# plt.close('all')
 
-# space_map_anim = Sun.create_space_map()
-# anim = animation.FuncAnimation(space_map_anim[1], earth.animate_orbit(),  \
-#             frames=duration, interval=200)
-# anim.save('ani.mp4',writer='ffmpeg',fps=1000/50)
+# def update_plot(i, data, scat):
+#     scat.set_offsets(data[i,:])
+#     return scat,
+
+# numframes = len(earth.y)
+# x = earth.y[:,0]
+# y = earth.y[:,1]
+# data = []
+# data = np.hstack((x[:,np.newaxis], y[:, np.newaxis]))
+
+# scat = space_map_ax.scatter([], [])
+
+# ani = animation.FuncAnimation(space_map_fig, update_plot, frames=numframes-1,\
+#     # interval=int(np.round(numframes/25,0)+1), fargs=(data, scat))
+#     interval=15, fargs=(data, scat))
+
+plt.show()
+
+
+
+
+
+
 
 
 #%%
 
-# kind of functioning. Here we have no animation, but no errors either...
+# working animation
 
-fig = plt.figure(2)
-ax = plt.axes(xlim=(0, 1), ylim=(0, 1))
-scat = ax.scatter([], [], s=60)
+# def update_plot(i, data, scat):
+#     scat.set_offsets(data[i,:])
+#     return scat,
 
-def init():
-    scat.set_offsets([])
-    return scat,
-
-def animate(i):
-    data = [earth.y[i,0], earth.y[i,1]]
-    scat.set_offsets(data)
-    return scat,
-
-anim = animation.FuncAnimation(fig, animate, init_func=init, frames=len(earth.y), 
-                               interval=20, blit=False, repeat=False)
-
-anim.save('animation.mp4')
-# lns = []
-# plots = []
-
-# def update(i):
-#     ln.set_xdata(y[i,0]/au)
-#     ln.set_ydata(y[i,1]/au)
-#     plots.set_offsets
-    
-# lns = []
-# for i in range(len(y)):
-#     ln = ax.plot([y[i,:2]/au], color="tab:orange", lw=2)
-#     # ln, = ax.plot([0, np.sin(sol[i, 0])], [0, -np.cos(sol[i, 0])],
-#     #               color='k', lw=2)
-#     lns.append(ln)
-# print(type(lns[2]))
-# print(lns[-3])
-# ax.set_aspect('equal', 'datalim')
-# ax.grid()
-# ani = animation.ArtistAnimation(fig, lns, interval=200)
-# ani.save('ani.mp4',writer='ffmpeg',fps=1000/50)
-
-# First set up the figure, the axis, and the plot element we want to animate
-# fig = plt.figure()
-# ax = plt.axes(xlim=(-2, 2), ylim=(-2, 2))
-
+# numframes = len(earth.y)
+# x = earth.y[:,0]
+# y = earth.y[:,1]
+# data = []
+# data = np.hstack((x[:,np.newaxis], y[:, np.newaxis]))
 
 # fig, ax = plt.subplots(figsize=(8,6))
-# line = ax.plot([], [], color="blue")
-# data_skip = 600
-# print(line)
-# # initialization function: plot the background of each frame
-# def init():
-#     ax.clear()
-#     ax.set_aspect("equal")
-#     ax.set_xlim([-1.2, 1.2])
-#     ax.set_ylim([-1.2, 1.2])
-#     ax.plot(y[:,0]/au, y[:,1]/au, color="blue")
+# scat = ax.scatter([], [])
+# ax.set_xlim([-2, 2])
+# ax.set_ylim([-2, 2])
 
-# # animation function.  This is called sequentially
-# def animate(i):
-    # x = np.linspace(0, 2, 1000)
-    # y = np.sin(2 * np.pi * (x - 0.01 * i))
-    # line.set_data(y[i:i+data_skip,0]/au, y[i+data_skip,1]/au)
-    # ax.plot(y[i:i+data_skip,0]/au, y[i:i+data_skip,1]/au, "o", color="blue")
-    # ax.plot(y[i+data_skip,0]/au, y[i+data_skip,1]/au, 'o')
-    # ax.plot(0., 0., 'o')
-    # line.set_data(x, y)
-    #return line,
-
-# anim = animation.FuncAnimation(fig, animate, init_func=init,  \
-#                                frames=np.arange(0, len(y)-data_skip-1, data_skip), interval=20)
-
-# anim.save('basic_animation.mp4', fps=30, extra_args=['-vcodec', 'libx264'])
+# ani = animation.FuncAnimation(fig, update_plot, frames=numframes-1,\
+#     # interval=int(np.round(numframes/25,0)+1), fargs=(data, scat))
+#     interval=15, fargs=(data, scat))
 
 # plt.show()
+# # HTML(ani.to_html5_video())
+# # ani.save("hei.mp4")
 
-# %%
-
-# HTML(anim.to_html5_video())
-# %%
