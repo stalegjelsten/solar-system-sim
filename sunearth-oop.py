@@ -8,11 +8,13 @@ import datetime
 import matplotlib.animation as animation
 from IPython.display import HTML
 
+# loading with kernels with planetary data for NASAs SPICE module
 spiceypy.furnsh("../_kernels/pck/gm_de431.tpc")
 spiceypy.furnsh("../_kernels/lsk/naif0012.tls")
 spiceypy.furnsh("../_kernels/spk/de432s.bsp")
 spiceypy.furnsh("../_kernels/pck/pck00010.tpc")
-# consts
+
+# "universal" constants
 start_date_utc = datetime.datetime(year=2000, month=1, day=1)
 end_date_utc = datetime.datetime(year=2000, month=9, day=1)
 start_date_et = spiceypy.utc2et(start_date_utc.strftime("%Y-%m-%dT00:00:00"))
@@ -20,25 +22,43 @@ end_date_et = spiceypy.utc2et(end_date_utc.strftime("%Y-%m-%dT00:00:00"))
 
 year = 365*86400                            # sec in year [s]
 au = 1.49598e11                             # AU in m     [m]
-duration = (end_date_utc-start_date_utc).days*86400
-t0 = 0.
-nt = int(np.round(duration/86400,0))
-t = np.linspace(t0,duration,nt)
-legend_objects = []
+sec_per_iteration = 86400                   # seconds per iteration of the
+                                            # calculations and animation
+
+
+
+duration = (end_date_utc - start_date_utc).days * 86400  # sim. duration in [s]
+nt = int(np.round(duration / sec_per_iteration, 0))      # number of steps
+t = np.linspace(0, duration, nt)                         # evenly spaced time
+                                                         #   array for calcs 
+
+# TODO: consider moving these to the solar system class
+
+legend_objects = []                                     
 legend_titles = []
 
 class Planet:
+    # all planets are stored in the Planet class. 
 
     def __init__(self, naifid, name, orbiting):
+        # planets are constructed with their NASA NAIF ID's (int), name (str)
+        # and the body they are orbiting (solar_system instance) 
+
         self.name = name
         self.naifid = naifid
+
+        # not all planets' states are available in spiceypy.spkgeo, so we
+        # use their barrycenters' to get state vectors
+
         self.barrycenter_id = int(str(naifid)[0])
-        self.state, self.r_sun = spiceypy.spkgeo(targ=self.barrycenter_id, et=start_date_et, \
-                                    ref="ECLIPJ2000", obs=10)
+        self.state, self.r_sun = spiceypy.spkgeo(targ=self.barrycenter_id, \
+                                                 et=start_date_et, \
+                                                 ref="ECLIPJ2000", obs=10)
         
         _, radii = spiceypy.bodvcd(naifid, "RADII",3)
-        self.radii = np.average(radii)*10e3
-        self.state = self.state*1000                        # km -> m
+        self.radii = np.average(radii)*1000                 # km -> m conv.
+        self.vis_area = 2 * self.radii ** 2 * np.pi
+        self.state = self.state*1000                        # km -> m conv.
         self.parent = orbiting
         self.y = []
         self.line = []
@@ -193,3 +213,6 @@ animation = Sun.animate_ss()
 
 # plt.savefig("hei.png")
 # plt.close('all')
+
+
+# %%
