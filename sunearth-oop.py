@@ -1,20 +1,17 @@
 # object oriented sun earth simulation
 #%%
 import numpy as np
-# import pandas as pd
 import spiceypy
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 import datetime
 import matplotlib.animation as animation
-# from astroquery.jplhorizons import Horizons
 from IPython.display import HTML
-from IPython.display import display
-import ipywidgets as widgets
 
 spiceypy.furnsh("../_kernels/pck/gm_de431.tpc")
 spiceypy.furnsh("../_kernels/lsk/naif0012.tls")
 spiceypy.furnsh("../_kernels/spk/de432s.bsp")
+spiceypy.furnsh("../_kernels/pck/pck00010.tpc")
 # consts
 start_date_utc = datetime.datetime(year=2000, month=1, day=1)
 end_date_utc = datetime.datetime(year=2000, month=9, day=1)
@@ -32,19 +29,22 @@ legend_titles = []
 
 class Planet:
 
-    data_skip = 1
-
     def __init__(self, naifid, name, orbiting):
         self.name = name
+        self.naifid = naifid
         self.barrycenter_id = int(str(naifid)[0])
         self.state, self.r_sun = spiceypy.spkgeo(targ=self.barrycenter_id, et=start_date_et, \
                                     ref="ECLIPJ2000", obs=10)
+        
+        _, radii = spiceypy.bodvcd(naifid, "RADII",3)
+        self.radii = np.average(radii)*10e3
         self.state = self.state*1000                        # km -> m
         self.parent = orbiting
         self.y = []
         self.line = []
         self.anim_data = []
         self.scat = []
+        self.color = []
         orbiting.add_planet(self)
     
     def f(self, y, t, mstar):
@@ -60,7 +60,7 @@ class Planet:
     def plot_orbit_2d(self):
         y = self.calculate_orbit()                      
         self.y = y
-        self.line, = self.parent.ax.plot(y[:,0],y[:,1])
+        self.line, = self.parent.ax.plot(y[:,0],y[:,1], color=self.color)
         self.line.set_label(self.name)
         legend_objects.append(self.line)
         legend_titles.append(self.name)
@@ -77,17 +77,11 @@ class Planet:
         y = self.y[:,1]
         self.data = np.hstack((x[:,np.newaxis], y[:, np.newaxis]))
 
-        self.scat = self.parent.ax.scatter([], [])
-        return self.data, self.scat
+        return self.data
     
     def animate_orbit(self):
-        def update_plot(i, data, scat):
-            scat.set_offsets(data[i,:])
-            return scat,
-        data, scat = self.make_scatter_for_animation()
-        ani = animation.FuncAnimation(self.parent.fig, update_plot, frames=len(self.y)-1,\
-            interval=15, fargs=(data, scat))
-        return scat, ani
+        data = self.make_scatter_for_animation()
+        return data
 
 
     @classmethod
@@ -105,6 +99,8 @@ class solar_system:
         self.planets = []
         self.ax = []
         self.fig = []
+        self.scat = []
+        self.data = []
 
     
     def add_planet(self, planet):
@@ -112,7 +108,7 @@ class solar_system:
 
     def create_space_map(self):
         plt.style.use("dark_background")
-        fig, ax = plt.subplots(figsize=(8,6))
+        fig, ax = plt.subplots(figsize=(10, 8))
         ax.grid(linestyle="dashed", alpha=0.4)
         ax.set_title(self.name + " Solar System")
         ax.plot([0.],[0.],'o', color="tab:orange")
@@ -122,12 +118,52 @@ class solar_system:
         return ax, fig
     
     def populate_ss(self):
+
+        cmap = plt.get_cmap('plasma')
+        colors = cmap(np.linspace(0, 1, len(self.planets)))
+        j = 0
+
         for i in self.planets:
+            i.color = colors[j]
             i.plot_orbit_2d()
+            j+=1
 
     def animate_ss(self):
+
+        num_planets = len(self.planets)
+        self.data = np.zeros((nt, num_planets, 2))
+        self.color = np.zeros((nt, num_planets, 4))
+        
+        planet_no = 0
+        
         for i in self.planets:
-            self.scat = i.animate_orbit()
+            data   = i.animate_orbit()
+            for j in range(len(data)):
+                self.color[j,planet_no,:] = i.color
+                for k in range(2):
+                    self.data[j,planet_no,k] = data[j,k]
+            planet_no+=1
+
+        def update_plot(i, data, scat):
+            # num_planets = len(self.planets)
+            scat.set_offsets(data[i])
+            # for j in range(num_planets):
+            #     scat.set_offsets(data[i,j])
+            #     scat.set_array(self.planets[j].color)
+            time = start_date_utc + datetime.timedelta(days=i)
+            time_str = time.strftime("%Y-%m-%d")
+            title.set_text("Date: " + time_str)
+            return scat,title
+
+        title = self.ax.text(1,1.03, "", ha="right", va="top", transform=self.ax.transAxes)
+
+
+        self.scat = self.ax.scatter([], [])
+        ani = animation.FuncAnimation(self.fig, update_plot, frames=nt-1,\
+            # interval=int(np.round(numframes/25,0)+1), fargs=(data, scat))
+            interval=15, fargs=(self.data, self.scat))
+        plt.show()
+        return ani
         
 
 
@@ -149,61 +185,11 @@ mars = Planet(499, "Mars", Sun)
 # neptune = Planet(899, "Neptune", Sun)
 
 Sun.populate_ss()
-Sun.animate_ss()
-
 Sun.ax.legend(legend_objects, legend_titles)
+
+animation = Sun.animate_ss()
+
+# animation.save("innersystem.mp4", codec="libx264")
+
 # plt.savefig("hei.png")
 # plt.close('all')
-
-# def update_plot(i, data, scat):
-#     scat.set_offsets(data[i,:])
-#     return scat,
-
-# numframes = len(earth.y)
-# x = earth.y[:,0]
-# y = earth.y[:,1]
-# data = []
-# data = np.hstack((x[:,np.newaxis], y[:, np.newaxis]))
-
-# scat = space_map_ax.scatter([], [])
-
-# ani = animation.FuncAnimation(space_map_fig, update_plot, frames=numframes-1,\
-#     # interval=int(np.round(numframes/25,0)+1), fargs=(data, scat))
-#     interval=15, fargs=(data, scat))
-
-plt.show()
-
-
-
-
-
-
-
-
-#%%
-
-# working animation
-
-# def update_plot(i, data, scat):
-#     scat.set_offsets(data[i,:])
-#     return scat,
-
-# numframes = len(earth.y)
-# x = earth.y[:,0]
-# y = earth.y[:,1]
-# data = []
-# data = np.hstack((x[:,np.newaxis], y[:, np.newaxis]))
-
-# fig, ax = plt.subplots(figsize=(8,6))
-# scat = ax.scatter([], [])
-# ax.set_xlim([-2, 2])
-# ax.set_ylim([-2, 2])
-
-# ani = animation.FuncAnimation(fig, update_plot, frames=numframes-1,\
-#     # interval=int(np.round(numframes/25,0)+1), fargs=(data, scat))
-#     interval=15, fargs=(data, scat))
-
-# plt.show()
-# # HTML(ani.to_html5_video())
-# # ani.save("hei.mp4")
-
