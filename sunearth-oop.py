@@ -19,20 +19,20 @@
 # 
 # We can also express the gravitational force as a vector:
 # $$ \vec{F}_G = - \frac{GMm}{r^3}\vec{r} $$
-# where $\vec{r}$ is the position vector and $r=\sqrt{ \lvert x \rvert}$.
+# where $\vec{r}$ is the position vector and $r= \lvert x \rvert$.
 #
 # From Newtons second law we have $\sum{\vec{F}} = m\vec{a}$ and substituting for $\vec{F}_G$ gives:
-# $$ m\vec{a} = - \frac{GMm}{r^3}\vec{x} \Leftrightarrow \vec{a} = - \frac{GM}{r^3}\vec{x} $$
+# $$ m\vec{a} = - \frac{GMm}{r^3}\vec{r} \Leftrightarrow \vec{a} = - \frac{GM}{r^3}\vec{r} $$
 #
 # We can find the velocity and position of the satelite by integration as the acceleration of the satelite
 # is the derivative of the velocity and the double derivative of the position.
-# $$ \vec{\ddot r} = \vec{\dot v} = \vec{a} $$
+# $$  \vec{a} = \vec{\dot v} = \vec{\ddot r} $$
 #
 # In this script we find the positions by numerical integration. To accomplish that we construct a vector $\vec{x}(t)$ such that:
 # $$ \vec{x}(t) = \begin{bmatrix} x(t)\\ y(t) \\ z(t) \\ v_x(t) \\ v_y(t) \\ v_z(t) \end{bmatrix} $$
 # This state vector contains both the position and velocity of the satelite.
-# We also define the function $f$ with the derivative of $\vec{x}(t)$ and use numerical integration to find the solution
-# to our differential equation.
+# We also define the function $f$ such that $\frac{\mathrm{d}\vec{x}}{\mathrm{d}t} = f(\vec{x},t)$ and use numerical integration 
+# to find the solution to our differential equation.
 # $$ f(\vec{x},t) = \begin{bmatrix} v_x(t)\\ v_y(t)\\ v_z(t)\\ F_x/m\\ F_y/m\\ F_z/m \end{bmatrix} $$
 #
 # The initial values for our initial value problem are sourced from [NASAs SPICE Toolkit](https://naif.jpl.nasa.gov/naif/toolkit.html).
