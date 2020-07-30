@@ -39,7 +39,7 @@ it seems to be fairly close to other simulations and measurements.
 
 The gravitational force $\vec{F}$ on a satelite with mass $m$ is given by:
 $$ {F}_G = - \frac{GMm}{r^2} $$
-Where $G$ is the gravitational constant, $M$ is the mass of the central object (the Sun in our case), 
+Where \$G\$ is the gravitational constant, $M$ is the mass of the central object (the Sun in our case), 
 $m$ is the mass of the satelite and $r^2$ is the square of the distance between the objects.
 
 We can also express the gravitational force as a vector:
