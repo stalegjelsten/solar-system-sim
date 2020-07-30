@@ -61,9 +61,13 @@ spiceypy.furnsh(kernel_dir + "lsk/naif0012.tls")
 spiceypy.furnsh(kernel_dir + "spk/de432s.bsp")
 spiceypy.furnsh(kernel_dir + "pck/pck00010.tpc")
 
+# figure variables
+figure_size = (6, 4)                        # a tuple with size of animation
+                                            # figure in inches
+
 # time variables
 start_date_utc = datetime.datetime(year=2000, month=1, day=1)
-end_date_utc = datetime.datetime(year=2001, month=9, day=1)
+end_date_utc = datetime.datetime(year=2002, month=3, day=1)
 sec_per_iteration = 86400                   # seconds per iteration of the
                                             # calculations and animation
 
@@ -105,6 +109,7 @@ class Planet:
         _, radii = spiceypy.bodvcd(naifid, "RADII",3)
         self.radii = np.average(radii)*1000                 # km -> m conv.
         self.vis_area = 2 * self.radii ** 2 * np.pi
+        self.size = int(np.ceil(self.vis_area/orbiting.scaling_factor*50000))
         self.state = self.state*1000                        # km -> m conv.
         self.parent = orbiting
         self.gm = orbiting.G*orbiting.sun_mass
@@ -160,14 +165,21 @@ class Planet:
 class planetary_system:
 
     G = 6.67428e-11                             # m3 / kg / s^2
-    def __init__(self, name, sun_mass):
+    def __init__(self, naifid, name, sun_mass):
+        self.naifid = naifid
         self.name = name
         self.sun_mass = sun_mass
         self.planets = []
+        self.num_planets = []
+        _, radii = spiceypy.bodvcd(naifid, "RADII",3)
+        self.radii = np.average(radii)*1000                 # km -> m conv.
+        self.vis_area = 2 * self.radii ** 2 * np.pi
+        self.size = 20
+        self.scaling_factor = self.vis_area/self.size
         self.ax = []
         self.fig = []
-        self.scat = []
         self.data = []
+        self.scatters = []
 
     
     def add_planet(self, planet):
@@ -175,10 +187,10 @@ class planetary_system:
 
     def create_space_map(self):
         plt.style.use("dark_background")
-        fig, ax = plt.subplots(figsize=(10, 8))
+        fig, ax = plt.subplots(figsize=figure_size)
         ax.grid(linestyle="dashed", alpha=0.4)
         ax.set_title(self.name + " Solar System")
-        ax.plot([0.],[0.],'o', color="tab:orange")
+        ax.plot([0.],[0.], marker='o', markersize=self.size, color="tab:orange")
         ax.set_aspect("equal")
         ax.set_ylabel("Distance in AU")
         ax.set_xlabel("Distance in AU")
@@ -189,6 +201,7 @@ class planetary_system:
         cmap = plt.get_cmap('plasma')
         colors = cmap(np.linspace(0, 1, len(self.planets)))
         j = 0
+        self.num_planets = len(self.planets)
 
         for i in self.planets:
             i.color = colors[j]
@@ -197,9 +210,9 @@ class planetary_system:
 
     def animate_ss(self):
 
-        num_planets = len(self.planets)
-        self.data = np.zeros((nt, num_planets, 2))
-        self.color = np.zeros((nt, num_planets, 4))
+        self.num_planets = len(self.planets)
+        self.data = np.zeros((nt, self.num_planets, 2))
+        self.color = np.zeros((nt, self.num_planets, 4))
         
         planet_no = 0
         
@@ -212,37 +225,35 @@ class planetary_system:
             planet_no+=1
 
         def update_plot(i, data, scat):
-            # num_planets = len(self.planets)
-            scat.set_offsets(data[i])
-            # for j in range(num_planets):
-            #     scat.set_offsets(data[i,j])
-            #     scat.set_array(self.planets[j].color)
+            for j in range(self.num_planets):
+                scat[j].set_offsets(data[i,j])
             time = start_date_utc + datetime.timedelta(days=i)
             time_str = time.strftime("%Y-%m-%d")
             timer.set_text("Date: " + time_str)
             return scat,timer
 
-        timer = self.ax.text(1,1.03, "", ha="right", va="top", \
+        timer = self.ax.text(0,0, "", ha="left", va="bottom", \
                              transform=self.ax.transAxes)
-
-
-        self.scat = self.ax.scatter([], [])
+                            
+        for i in range(self.num_planets):
+            self.scatters.append(self.ax.scatter([],[], s=self.planets[i].size,\
+                                 color=self.planets[i].color))
+        
         ani = animation.FuncAnimation(self.fig, update_plot, frames=nt-1,\
-            # interval=int(np.round(numframes/25,0)+1), fargs=(data, scat))
-            interval=15, fargs=(self.data, self.scat))
+            interval=33, fargs=(self.data, self.scatters))
         plt.show()
         return ani
         
 
 
 # Let's add our solar system as an instance
-
-Sun = planetary_system("Sun", 1.98892e30)
+Sun = planetary_system(10, "Sun", 1.98892e30)
 
 # create our solar system and save Axes object as space_map
 Sun.ax, Sun.fig = Sun.create_space_map()
 
 
+# Let's add some planets
 mercury = Planet(199, "Mercury", Sun)
 venus = Planet(299, "Venus", Sun)
 earth = Planet(399, "Earth", Sun)
@@ -252,14 +263,17 @@ mars = Planet(499, "Mars", Sun)
 # uranus = Planet(799, "Uranus", Sun)
 # neptune = Planet(899, "Neptune", Sun)
 
+# Let's populate the solar solar system with our planets...
 Sun.populate_ss()
 Sun.ax.legend(legend_objects, legend_titles)
 
+# ... and start the animation. Comment the next line if you just
+# want a plot with the planetary orbits
 animation = Sun.animate_ss()
 
-# animation.save("innersystem.mp4", codec="libx264")
+# animation.save("solarsystem.gif", writer="imagemagick", fps=30)
+# plt.savefig("solar_system.png")
 
-# plt.savefig("hei.png")
 # plt.close('all')
 
 
