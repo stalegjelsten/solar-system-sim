@@ -37,35 +37,35 @@ it seems to be fairly close to other simulations and measurements.
 
 ## Theory on satelite orbits
 
-The gravitational force <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/1e542f84ff6a79def15ac7917bec74ec.svg?invert_in_darkmode" align=middle width=13.17075374999999pt height=31.799054100000024pt/> on a satelite with mass <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode" align=middle width=14.433101099999991pt height=14.15524440000002pt/> is given by:
-<p align="center"><img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/f755c890b14bdcd14a32bf24b2d8785b.svg?invert_in_darkmode" align=middle width=103.40032889999999pt height=33.62942055pt/></p>
-Where <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/5201385589993766eea584cd3aa6fa13.svg?invert_in_darkmode" align=middle width=12.92464304999999pt height=22.465723500000017pt/> is the gravitational constant, <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/fb97d38bcc19230b0acd442e17db879c.svg?invert_in_darkmode" align=middle width=17.73973739999999pt height=22.465723500000017pt/> is the mass of the central object (the Sun in our case), 
-<img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode" align=middle width=14.433101099999991pt height=14.15524440000002pt/> is the mass of the satelite and <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/dd9ad1899e5c8220c8b4bbc13483d097.svg?invert_in_darkmode" align=middle width=14.42550119999999pt height=26.76175259999998pt/> is the square of the distance between the objects.
+The gravitational force <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/1e542f84ff6a79def15ac7917bec74ec.svg?invert_in_darkmode" align=middle width=13.17075374999999pt height=31.799054100000024pt/> on a satelite with mass <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode" align=middle width=14.433101099999991pt height=14.15524440000002pt/> is given by:
+<p align="center"><img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/f755c890b14bdcd14a32bf24b2d8785b.svg?invert_in_darkmode" align=middle width=103.40032889999999pt height=33.62942055pt/></p>
+Where <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/5201385589993766eea584cd3aa6fa13.svg?invert_in_darkmode" align=middle width=12.92464304999999pt height=22.465723500000017pt/> is the gravitational constant, <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/fb97d38bcc19230b0acd442e17db879c.svg?invert_in_darkmode" align=middle width=17.73973739999999pt height=22.465723500000017pt/> is the mass of the central object (the Sun in our case), 
+<img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode" align=middle width=14.433101099999991pt height=14.15524440000002pt/> is the mass of the satelite and <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/dd9ad1899e5c8220c8b4bbc13483d097.svg?invert_in_darkmode" align=middle width=14.42550119999999pt height=26.76175259999998pt/> is the square of the distance between the objects.
 
 We can also express the gravitational force as a vector:
 
-<p align="center"><img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/0fb7219a57279356712249c10918abd9.svg?invert_in_darkmode" align=middle width=115.59652994999999pt height=33.62942055pt/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/0fb7219a57279356712249c10918abd9.svg?invert_in_darkmode" align=middle width=115.59652994999999pt height=33.62942055pt/></p>
 
-where <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/b32c2a51de7b6df016e08d3c668bdf29.svg?invert_in_darkmode" align=middle width=10.747741949999993pt height=23.488575000000026pt/> is the position vector and <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/d246d7b1061818208b4e99e106d48e50.svg?invert_in_darkmode" align=middle width=64.75640324999999pt height=29.424786600000015pt/>.
+where <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/b32c2a51de7b6df016e08d3c668bdf29.svg?invert_in_darkmode" align=middle width=10.747741949999993pt height=23.488575000000026pt/> is the position vector and <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/d246d7b1061818208b4e99e106d48e50.svg?invert_in_darkmode" align=middle width=64.75640324999999pt height=29.424786600000015pt/>.
 
-From Newtons second law we have <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/fa31f112c857f3891d84b6a758ea1682.svg?invert_in_darkmode" align=middle width=79.01440799999999pt height=31.799054100000024pt/> and substituting for <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/da14a7649c5f43262297c60caaf7a32b.svg?invert_in_darkmode" align=middle width=20.805292199999986pt height=31.799054100000024pt/> gives:
+From Newtons second law we have <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/fa31f112c857f3891d84b6a758ea1682.svg?invert_in_darkmode" align=middle width=79.01440799999999pt height=31.799054100000024pt/> and substituting for <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/da14a7649c5f43262297c60caaf7a32b.svg?invert_in_darkmode" align=middle width=20.805292199999986pt height=31.799054100000024pt/> gives:
 
-<p align="center"><img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/df68b9b36dbe6166c3d7e65bdac8ea44.svg?invert_in_darkmode" align=middle width=230.36326004999998pt height=33.62942055pt/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/df68b9b36dbe6166c3d7e65bdac8ea44.svg?invert_in_darkmode" align=middle width=230.36326004999998pt height=33.62942055pt/></p>
 
 We can find the velocity and position of the satelite by integration as the acceleration of the satelite
 is the derivative of the velocity and the double derivative of the position.
 
-<p align="center"><img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/5bb8b45ce51c6a9a39ef0345ee98da5c.svg?invert_in_darkmode" align=middle width=70.50862995pt height=15.645186149999999pt/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/5bb8b45ce51c6a9a39ef0345ee98da5c.svg?invert_in_darkmode" align=middle width=70.50862995pt height=15.645186149999999pt/></p>
 
-In this script we find the positions by numerical integration. To accomplish that we construct a vector <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/ec2a7d3c63d41be3886d013bcc8a3056.svg?invert_in_darkmode" align=middle width=28.33622219999999pt height=24.65753399999998pt/> such that:
+In this script we find the positions by numerical integration. To accomplish that we construct a vector <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/ec2a7d3c63d41be3886d013bcc8a3056.svg?invert_in_darkmode" align=middle width=28.33622219999999pt height=24.65753399999998pt/> such that:
 
-<p align="center"><img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/579471fcd94ee308cee6dafb55846f11.svg?invert_in_darkmode" align=middle width=107.13755249999998pt height=118.35734295pt/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/579471fcd94ee308cee6dafb55846f11.svg?invert_in_darkmode" align=middle width=107.13755249999998pt height=118.35734295pt/></p>
 
 This state vector contains both the position and velocity of the satelite.
-We also define the function <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/190083ef7a1625fbc75f243cffb9c96d.svg?invert_in_darkmode" align=middle width=9.81741584999999pt height=22.831056599999986pt/> with the derivative of <img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/ec2a7d3c63d41be3886d013bcc8a3056.svg?invert_in_darkmode" align=middle width=28.33622219999999pt height=24.65753399999998pt/> and use numerical integration to find the solution
+We also define the function <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/190083ef7a1625fbc75f243cffb9c96d.svg?invert_in_darkmode" align=middle width=9.81741584999999pt height=22.831056599999986pt/> with the derivative of <img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/ec2a7d3c63d41be3886d013bcc8a3056.svg?invert_in_darkmode" align=middle width=28.33622219999999pt height=24.65753399999998pt/> and use numerical integration to find the solution
 to our differential equation.
 
-<p align="center"><img src="https://rawgit.com/stalegjelsten/solar-system-sim/master/svgs/694b80136eb5c63c902f9b61d133b20a.svg?invert_in_darkmode" align=middle width=130.57465079999997pt height=118.35734295pt/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/stalegjelsten/solar-system-sim/master/svgs/694b80136eb5c63c902f9b61d133b20a.svg?invert_in_darkmode" align=middle width=130.57465079999997pt height=118.35734295pt/></p>
 
 The initial values for our initial value problem are sourced from [NASAs SPICE Toolkit](https://naif.jpl.nasa.gov/naif/toolkit.html).
 
