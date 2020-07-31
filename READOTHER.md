@@ -2,7 +2,9 @@
 
 This repo contains a python script to simulate solar systems. The script has only been tested with our own [Solar System](https://en.wikipedia.org/wiki/Solar_System).
 
-![Solar system animation example](solarsystem-sim-example.gif) This script was written in the summer of 2020 to improve on a program I had written for [pico-8](https://www.lexaloffle.com/pico-8.php). Because of the pico-8's limited float and integer sizes (and the fact that I had to use [Euler method](https://en.wikipedia.org/wiki/Euler_method) for integration), the orbit calculations were way off. This script is by no means an accurate representation of a planetary system -- it only calculates forces between each satelite and the star -- but at least it seems to be fairly close to other simulations and measurements.
+![Solar system animation example](solarsystem-sim-example.gif)
+
+This script was written in the summer of 2020 to improve on a program I had written for [pico-8](https://www.lexaloffle.com/pico-8.php). Because of the pico-8's limited float and integer sizes (and the fact that I had to use [Euler method](https://en.wikipedia.org/wiki/Euler_method) for integration), the orbit calculations were way off. This script is by no means an accurate representation of a planetary system -- it only calculates forces between each satelite and the star -- but at least it seems to be fairly close to other simulations and measurements.
 
 ## Requirements
 
