@@ -1,8 +1,8 @@
-# Solar system animation
+# Solar system simulator
 
 This repo contains a python script to simulate solar systems. The script has only been tested with our own [Solar System](https://en.wikipedia.org/wiki/Solar_System).
 
-![Solar system animation example](solarsystem-sim-example.gif)
+![Solar system animation example](solarsystem-sim-example.gif) This script was written in the summer of 2020 to improve on a program I had written for [pico-8](https://www.lexaloffle.com/pico-8.php). Because of the pico-8's limited float and integer sizes (and the fact that I had to use [Euler method](https://en.wikipedia.org/wiki/Euler_method) for integration), the orbit calculations were way off. This script is by no means an accurate representation of a planetary system -- it only calculates forces between each satelite and the star -- but at least it seems to be fairly close to other simulations and measurements.
 
 ## Requirements
 
@@ -22,18 +22,9 @@ Initialize a planetary system by doing something like `Sun = planetary_system(10
 
 Initialize planets as `Planet` instances by doing something like `earth = Planet(399, "Earth", Sun)`, where Sun is the planetary_system instance you constructed earlier. 399 is the [NASA NAIF ID](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/FORTRAN/req/naif_ids.html) for the planet.
 
-TODO: write more text here... 😅
+## How accurate is the simulation?
 
-# Solar system simulator
-
-By Ståle Gjelsten.
-
-This script was written in the summer of 2020 to improve on a program I had written for
-[pico-8](https://www.lexaloffle.com/pico-8.php). Because of the pico-8's limited float and
-integer sizes (and the fact that I had to use [Euler method](https://en.wikipedia.org/wiki/Euler_method) 
-for integration), the orbit calculations were way off. This script is by no means an accurate representation
-of a planetary system -- it only calculates forces between each satelite and the star -- but at least
-it seems to be fairly close to other simulations and measurements.
+I have not tested the accuracy of the simulation yet, but the orbits seem to be quite accurate (and Earth takes 1 year to orbit the Sun). *The size of the planets and the Sun is not to scale*. The sizes of the planets are correct relative to each other, but they are magnified relative to the Sun. The size of the planets and the Sun is also magnified relative to the distances between them.
 
 ## Theory on satelite orbits
 
@@ -53,8 +44,7 @@ From Newtons second law we have $\sum{\vec{F}} = m\vec{a}$ and substituting for 
 
 $$ m\vec{a} = - \frac{GMm}{r^3}\vec{r} \Leftrightarrow \vec{a} = - \frac{GM}{r^3}\vec{r} $$
 
-We can find the velocity and position of the satelite by integration as the acceleration of the satelite
-is the derivative of the velocity and the double derivative of the position.
+We can find the velocity and position of the satelite by integration as the acceleration of the satelite is the derivative of the velocity and the double derivative of the position.
 
 $$  \vec{a} = \vec{\dot v}  = \vec{\ddot r} $$
 
@@ -62,10 +52,7 @@ In this script we find the positions by numerical integration. To accomplish tha
 
 $$ \vec{x}(t) = \begin{bmatrix} x(t)\\ y(t) \\ z(t) \\ v_x(t) \\ v_y(t) \\ v_z(t) \end{bmatrix} $$
 
-This state vector contains both the position and velocity of the satelite.
-We also define the function $f$ such that 
-$\frac{\mathrm{d}\vec{x}}{\mathrm{d}t} = f(\vec{x},t)$ and use numerical integration to find the solution
-to our differential equation.
+This state vector contains both the position and velocity of the satelite. We also define the function $f$ such that $\frac{\mathrm{d}\vec{x}}{\mathrm{d}t} = f(\vec{x},t)$ and use numerical integration to find the solution to our differential equation.
 
 $$ f(\vec{x},t) = \begin{bmatrix} v_x(t)\\ v_y(t)\\ v_z(t)\\ F_x/m\\ F_y/m\\ F_z/m \end{bmatrix} $$
 

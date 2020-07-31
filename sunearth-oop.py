@@ -275,6 +275,3 @@ animation = Sun.animate_ss()
 # plt.savefig("solar_system.png")
 
 # plt.close('all')
-
-
-# %%
