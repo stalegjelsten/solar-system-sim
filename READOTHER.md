@@ -54,7 +54,7 @@ In this script we find the positions by numerical integration. To accomplish tha
 
 $$ \vec{x}(t) = \begin{bmatrix} x(t)\\ y(t) \\ z(t) \\ v_x(t) \\ v_y(t) \\ v_z(t) \end{bmatrix} $$
 
-This state vector contains both the position and velocity of the satelite. We also define the function $f$ such that $\frac{\mathrm{d}\vec{x}}{\mathrm{d}t} = f(\vec{x},t)$ and use numerical integration to find the solution to our differential equation.
+This [state vector](https://en.wikipedia.org/wiki/Orbital_state_vectors) contains both the position and velocity of the satelite. We also define the function $f$ such that $\frac{\mathrm{d}\vec{x}}{\mathrm{d}t} = f(\vec{x},t)$ and use numerical integration to find the solution to our differential equation.
 
 $$ f(\vec{x},t) = \begin{bmatrix} v_x(t)\\ v_y(t)\\ v_z(t)\\ F_x/m\\ F_y/m\\ F_z/m \end{bmatrix} $$
 
