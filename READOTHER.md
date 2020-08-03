@@ -4,17 +4,17 @@ This repo contains a python script to simulate solar systems. The script has onl
 
 ![Solar system animation example](solarsystem-sim-example.gif)
 
-This script was written in the summer of 2020 to improve on a program I had written for [pico-8](https://www.lexaloffle.com/pico-8.php). Because of the pico-8's limited float and integer sizes (and the fact that I had to use [Euler method](https://en.wikipedia.org/wiki/Euler_method) for integration), the orbit calculations were way off. This script is by no means an accurate representation of a planetary system -- it only calculates forces between each satelite and the star -- but at least it seems to be fairly close to other simulations and measurements.
+This script was written in the summer of 2020 to improve on a program I had written for [pico-8](https://www.lexaloffle.com/pico-8.php). Because of the pico-8's limited float and integer sizes (and the fact that I had to use [Euler method](https://en.wikipedia.org/wiki/Euler_method) for integration), the orbit calculations in that program were way off. *This script* is by no means an accurate representation of a planetary system -- it only calculates forces between each planet and the star -- but at least it seems to be fairly close to other simulations and measurements.
 
 ## Requirements
 
 The script requires the following modules:
 
-- datetime
-- spiceypy
-- scipy
-- numpy
-- matplotlib
+- [datetime](https://docs.python.org/3/library/datetime.html#module-datetime) for date calculations.
+- [spiceypy](https://pypi.org/project/spiceypy/) for initial planetary orbit positions.
+- [scipy](https://pypi.org/project/scipy/) for `odeint()` function to solve differential equations.
+- [numpy](https://pypi.org/project/numpy/) because math. And ndarrays.
+- [matplotlib](https://pypi.org/project/matplotlib/) to plot and animate the orbits.
 
 ## How the script works
 
@@ -28,25 +28,27 @@ Initialize planets as `Planet` instances by doing something like `earth = Planet
 
 I have not tested the accuracy of the simulation yet, but the orbits seem to be quite accurate (and Earth takes 1 year to orbit the Sun). *The size of the planets and the Sun is not to scale*. The sizes of the planets are correct relative to each other, but they are magnified relative to the Sun. The size of the planets and the Sun is also magnified relative to the distances between them.
 
-## Theory on satelite orbits
+## Theory on planetary orbits
 
-The gravitational force $\vec{F}$ on a satelite with mass $m$ is given by:
+[Planetary orbits](https://en.wikipedia.org/wiki/Orbit#Planetary_orbits) are elliptical and orbit the system's [barycenter](https://en.wikipedia.org/wiki/Barycenter).
+
+The [gravitational force](https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation) $\vec{F}$ on a planet with mass $m$ is given by:
 
 $$ {F}_G = - \frac{GMm}{r^2} $$
 
-Where $G$ is the gravitational constant, $M$ is the mass of the central object (the Sun in our case), $m$ is the mass of the satelite and $r^2$ is the square of the distance between the objects.  
+Where $G$ is the [gravitational constant](https://en.wikipedia.org/wiki/Gravitational_constant), $M$ is the mass of the central object (the Sun in our case), $m$ is the mass of the planet and $r^2$ is the square of the distance between the objects.  
 
-We can also express the gravitational force as a vector:
+We can also express the [gravitational force as a vector](https://en.wikipedia.org/wiki/Newton%27s_law_of_universal_gravitation#Vector_form):
 
-$$ \vec{F}_G = - \frac{GMm}{r^3}\vec{r} $$
+$$ \vec{F}_G =  - \frac{GMm}{r^2} \cdot \frac{\vec{r}}{\lvert \vec{r} \rvert} = - \frac{GMm}{r^3}\vec{r} $$
 
-where $\vec{r}$ is the position vector and $r= \lvert \vec{r} \rvert$.
+where $\vec{r}$ is the position vector and $r$ is the norm of $\vec{r}$ such that $r= \lvert \vec{r} \rvert$.
 
 From Newtons second law we have $\sum{\vec{F}} = m\vec{a}$ and substituting for $\vec{F}_G$ gives:
 
 $$ m\vec{a} = - \frac{GMm}{r^3}\vec{r} \Leftrightarrow \vec{a} = - \frac{GM}{r^3}\vec{r} $$
 
-We can find the velocity and position of the satelite by integration as the acceleration of the satelite is the derivative of the velocity and the double derivative of the position.
+We can find the velocity and position of the planet by integration as the acceleration of the planet is the derivative of the velocity and the double derivative of the position.
 
 $$  \vec{a} = \vec{\dot v}  = \vec{\ddot r} $$
 
@@ -54,7 +56,7 @@ In this script we find the positions by numerical integration. To accomplish tha
 
 $$ \vec{x}(t) = \begin{bmatrix} x(t)\\ y(t) \\ z(t) \\ v_x(t) \\ v_y(t) \\ v_z(t) \end{bmatrix} $$
 
-This [state vector](https://en.wikipedia.org/wiki/Orbital_state_vectors) contains both the position and velocity of the satelite. We also define the function $f$ such that $\frac{\mathrm{d}\vec{x}}{\mathrm{d}t} = f(\vec{x},t)$ and use numerical integration to find the solution to our differential equation.
+This [state vector](https://en.wikipedia.org/wiki/Orbital_state_vectors) contains both the position and velocity of the planet. We also define the function $f$ such that $\frac{\mathrm{d}\vec{x}}{\mathrm{d}t} = f(\vec{x},t)$ and use numerical integration to find the solution to our differential equation.
 
 $$ f(\vec{x},t) = \begin{bmatrix} v_x(t)\\ v_y(t)\\ v_z(t)\\ F_x/m\\ F_y/m\\ F_z/m \end{bmatrix} $$
 
